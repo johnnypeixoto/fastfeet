@@ -3,5 +3,5 @@
   <br>
 </h1>
 <h3 align="center">
-  Desafio Bootcamp GoStack 10
+  Desafio Bootcamp GoStack 10 🚀
 </h3>
