@@ -1,4 +1,3 @@
-import { isAfter } from 'date-fns';
 import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
 import Recipient from '../models/Recipient';

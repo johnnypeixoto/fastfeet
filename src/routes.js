@@ -31,6 +31,7 @@ router.post('/deliveries', DeliveryController.store);
 router.put('/deliveries/:deliveryId', DeliveryController.update);
 router.delete('/deliveries/:deliveryId', DeliveryController.delete);
 router.get('/view/:deliverymanId', ViewDeliveriesController.index);
+router.get('/deliveryman/:deliverymanId/deliveries', OrderController.index);
 router.post('/order/:deliveryId/start/:deliverymanId', OrderController.store);
 router.put(
   '/order/:deliveryId/end/:deliverymanId',

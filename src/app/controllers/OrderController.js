@@ -16,6 +16,20 @@ import Deliveryman from '../models/Deliveryman';
 import Signature from '../models/Signature';
 
 class DeliveryOrderController {
+  async index(req, res) {
+    const { deliverymanId } = req.params;
+
+    const deliveries = await Delivery.findAll({
+      where: {
+        deliveryman_id: deliverymanId,
+        delivered: true,
+      },
+      order: ['id'],
+    });
+
+    return res.json(deliveries);
+  }
+
   async store(req, res) {
     const { deliveryId, deliverymanId } = req.params;
     const { date } = req.query;
@@ -39,7 +53,7 @@ class DeliveryOrderController {
 
     const searchDate = Number(date);
 
-    const timeToDelivery = ['08:00', '18:00'];
+    const timeToDelivery = ['08:00', '19:00'];
 
     const available = timeToDelivery.map(time => {
       const [hour, minute] = time.split(':');
@@ -78,7 +92,7 @@ class DeliveryOrderController {
 
     delivery.start_date = new Date();
     delivery.save();
-    return res.json(available);
+    return res.json(delivery);
   }
 
   async update(req, res) {

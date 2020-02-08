@@ -3,6 +3,9 @@ import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
 import Recipient from '../models/Recipient';
 
+import ConfirmedOrder from '../jobs/ConfirmedOrder';
+import Queue from '../../lib/Queue';
+
 class DeliveryController {
   async index(req, res) {
     const deliveries = await Delivery.findAll({
@@ -64,6 +67,11 @@ class DeliveryController {
           attributes: ['name', 'email'],
         },
       ],
+    });
+
+    await Queue.add(ConfirmedOrder.key, {
+      deliveryStored,
+      product,
     });
 
     return res.json(deliveryStored);
