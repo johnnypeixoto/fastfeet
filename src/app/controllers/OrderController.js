@@ -53,7 +53,7 @@ class DeliveryOrderController {
 
     const searchDate = Number(date);
 
-    const timeToDelivery = ['08:00', '19:00'];
+    const timeToDelivery = ['08:00', '18:00'];
 
     const available = timeToDelivery.map(time => {
       const [hour, minute] = time.split(':');

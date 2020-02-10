@@ -12,6 +12,7 @@ import FileController from './app/controllers/FileController';
 import DeliveryController from './app/controllers/DeliveryController';
 import ViewDeliveriesController from './app/controllers/ViewDeliveriesController';
 import OrderController from './app/controllers/OrderController';
+import DeliveryProblemController from './app/controllers/DeliveryProbemController';
 import authMiddleware from './app/middlewares/auth';
 
 const router = new Router();
@@ -38,6 +39,9 @@ router.put(
   upload.single('file'),
   OrderController.update
 );
+router.get('/delivery/problems', DeliveryProblemController.index2);
+router.get('/delivery/:deliveryId/problems', DeliveryProblemController.index);
+router.post('/delivery/:deliveryId/problem', DeliveryProblemController.store);
 router.post('/files', upload.single('file'), FileController.store);
 
 export default router;
