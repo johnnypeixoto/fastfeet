@@ -4,6 +4,7 @@ import Deliveryman from '../models/Deliveryman';
 import Recipient from '../models/Recipient';
 
 import ConfirmedOrder from '../jobs/ConfirmedOrder';
+// import Mail from '../../lib/Mail';
 import Queue from '../../lib/Queue';
 
 class DeliveryController {
@@ -21,6 +22,7 @@ class DeliveryController {
           attributes: ['name', 'email'],
         },
       ],
+      order: ['id'],
     });
 
     return res.json(deliveries);

@@ -13,10 +13,48 @@ import * as Yup from 'yup';
 
 import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
+import DeliveryProblem from '../models/DeliveryProblem';
+import Recipient from '../models/Recipient';
 import Signature from '../models/Signature';
 
 class DeliveryOrderController {
   async index(req, res) {
+    const { deliverymanId } = req.params;
+
+    const deliveries = await Delivery.findAll({
+      where: {
+        deliveryman_id: deliverymanId,
+        signature_id: null,
+        end_date: null,
+        canceled_at: null,
+      },
+      include: [
+        {
+          model: Deliveryman,
+          as: 'deliveryman',
+          attributes: ['name', 'email'],
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: [
+            'name',
+            'street',
+            'number',
+            'complement',
+            'state',
+            'town',
+            'cep',
+          ],
+        },
+      ],
+      order: ['id'],
+    });
+
+    return res.json(deliveries);
+  }
+
+  async show(req, res) {
     const { deliverymanId } = req.params;
 
     const deliveries = await Delivery.findAll({
@@ -30,7 +68,7 @@ class DeliveryOrderController {
     return res.json(deliveries);
   }
 
-  async store(req, res) {
+  async start(req, res) {
     const { deliveryId, deliverymanId } = req.params;
     const { date } = req.query;
 
@@ -95,7 +133,7 @@ class DeliveryOrderController {
     return res.json(delivery);
   }
 
-  async update(req, res) {
+  async end(req, res) {
     const { deliveryId, deliverymanId } = req.params;
 
     const schema = Yup.object().shape({
@@ -138,6 +176,42 @@ class DeliveryOrderController {
     delivery.save();
 
     return res.json(delivery);
+  }
+
+  async store(req, res) {
+    const { deliveryId } = req.params;
+
+    const schema = Yup.object().shape({
+      description: Yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body)))
+      return res.status(400).json({ erro: 'Validations fails' });
+
+    const { description } = req.body;
+
+    const delivery = await Delivery.findOne({
+      where: {
+        id: deliveryId,
+        canceled_at: null,
+        end_date: null,
+        signature_id: null,
+      },
+    });
+
+    if (!delivery) return res.status(404).json({ erro: 'Delivery not found' });
+
+    if (!delivery.start_date)
+      return res
+        .status(404)
+        .json({ erro: 'This delivery does not yet picked up' });
+
+    const deliveryProblem = await DeliveryProblem.create({
+      delivery_id: deliveryId,
+      description,
+    });
+
+    return res.json(deliveryProblem);
   }
 }
 
